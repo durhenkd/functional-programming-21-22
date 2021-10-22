@@ -118,7 +118,7 @@ pointInShape : Point -> Shape2D -> Bool
 pointInShape point shape = 
     let
         distance {x1, y1} {x2, y2} = sqrt((x1 - x2)^2 + (y1 - y2)^2)
-        area : Point -> Point -> Point -> Float
+        
         area point1 point2 point3 = heron (distance {x1 = point1.x, y1 = point1.y} {x2 = point2.x, y2 = point2.y}) 
                                             (distance {x1 = point1.x, y1 = point1.y} {x2 = point3.x, y2 = point3.y}) 
                                             (distance {x1 = point3.x, y1 = point3.y} {x2 = point2.x, y2 = point2.y})
