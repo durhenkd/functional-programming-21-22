@@ -3,9 +3,9 @@ module Inputs exposing (..)
 
 import Browser
 import Html exposing (..)
-import Html.Attributes exposing (checked, placeholder, style, type_, value)
+import Html.Attributes exposing (checked, placeholder, style, type_, value, disabled)
 import Html.Events exposing (..)
-
+import List
 
 main =
     Browser.element
@@ -50,6 +50,7 @@ type alias Model =
     , activateAccount : Bool
     , username : String
     , password : String
+    , passwordC : String
     , emailAddress : Maybe String
     }
 
@@ -58,11 +59,12 @@ type Msg
     = SelectedValue String
     | UsernameChanged String
     | PasswordChanged String
+    | PasswordCChanged String  
     | SetActivateAccount Bool
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { accountType = User, activateAccount = False, username = "", password = "", emailAddress = Nothing }
+    ( { accountType = User, activateAccount = False, username = "", password = "", passwordC = "", emailAddress = Nothing }
     , Cmd.none
     )
 
@@ -89,6 +91,11 @@ update msg model =
             , Cmd.none
             )
 
+        PasswordCChanged passwordc ->
+            ( { model | passwordC = passwordc }
+            , Cmd.none
+            )
+
         SetActivateAccount activate ->
             ( { model | activateAccount = activate }
             , Cmd.none
@@ -106,7 +113,7 @@ accountTypeView =
 
 
 accountDetailsView : Model -> Html Msg
-accountDetailsView { username, password } =
+accountDetailsView { username, password, passwordC } =
     let
         inputAttrs ty p v msg =
             [ type_ ty, placeholder p, value v, onInput msg ]
@@ -114,6 +121,7 @@ accountDetailsView { username, password } =
     div []
         [ input (inputAttrs "text" "username" username UsernameChanged) []
         , input (inputAttrs "password" "password" password PasswordChanged) []
+        , input (inputAttrs "password" "password again" passwordC PasswordCChanged) []
         ]
 
 
@@ -141,6 +149,24 @@ statusView model =
             ]
         ]
 
+passCheckView : Model -> Html Msg
+passCheckView { accountType, password, passwordC } = 
+    let
+        getText color tex = h4 [style "color" color] [text tex]
+        passMatchy = if password == "" || passwordC == "" then getText "red" "At least a password field is empty" else
+                    if password /= passwordC then getText "red" "Passwords do not match" else
+                    getText "green" "Passwords match!"
+        passLength = (password |> String.toList |> List.length)
+    in
+        if accountType == User then if passLength < 8 then getText "red" "Password should be at least 8 characters!" else passMatchy else
+                                    if passLength < 12 then getText "red" "Password should be at least 12 characters!" else passMatchy
+
+createAccBtnView : Model -> Html Msg
+createAccBtnView model =
+    let
+        isDisabled = if model.username == "" || model.password == "" || (model.password /= model.passwordC) then True else False
+    in
+    button [disabled (isDisabled)] [text "Create Account"]
 
 view : Model -> Html Msg
 view model =
@@ -149,5 +175,7 @@ view model =
         , accountTypeView
         , activateAccountView model.activateAccount
         , accountDetailsView model
+        , passCheckView model
+        , createAccBtnView model
         ]
 
