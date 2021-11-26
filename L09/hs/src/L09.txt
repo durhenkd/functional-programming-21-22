@@ -1,0 +1,58 @@
+twos :: [Integer]
+twos = 2:twos
+
+2:(2:(2:twos)) = 2:2:2:_
+
+rep :: t -> [t]
+rep e = e:(rep e)
+
+e:(e:(e:twos)) = e:e:e:_
+
+fibs :: [Integer]
+fibs = 0:1:(zipWith (+) fibs (tail fibs))
+
+0:1:(zipWith (+) (0:1:(zipWith (+) fibs (tail fibs))) (1:(zipWith (+) fibs (tail fibs)))
+0:1:1(zipWith (+) (1:(zipWith (+) fibs (tail fibs))) (zipWith (+) fibs (tail fibs))
+0:1:1(zipWith (+) (1:(zipWith (+) (0:1:(zipWith (+) fibs (tail fibs))) (1:(zipWith (+) fibs (tail fibs)))))) (zipWith (+) fibs (1:(zipWith (+) fibs (tail fibs)))
+0:1:1(zipWith (+) (1:1:(zipWith (+) (1:(zipWith (+) fibs (tail fibs))) (zipWith (+) fibs (tail fibs))))) (zipWith (+) fibs (1:(zipWith (+) fibs (tail fibs)))
+...
+0:1:1:2 haos
+
+
+count :: [Integer]
+count = 1:(map (+1) count)
+
+1:(map (+1) count)
+1:(map (+1) (1:(map (+1) count)))
+1:(map (+1) (1:(map (+1) (1:(map (+1) count)))))
+1:(2:(map (+1) (2:(map (+1) count))
+1:(2:(3:(map (+1) count))
+1:2:3:_
+
+powsOf2 :: [Integer]
+powsOf2 = 2:(map (*2) powsOf2)
+
+2:(map (*2) powsOf2)
+2:(map (*2) (2:(map (*2) powsOf2)))
+2:(map (*2) (2:(map (*2) (2:(map (*2) powsOf2)))))
+2:4:(map (*2) 4...))
+2:4:8:_
+
+oneList :: [[Integer]]
+oneList = [1]:(map (1:) oneList)
+
+[1]:(map (1:) oneList)
+[1]:(map (1:) ([1]:(map (1:) oneList)))
+[1]:(map (1:) ([1]:(map (1:) ([1]:(map (1:) oneList)))))
+
+
+primes :: [Integer]
+primes = sieve [2..] where
+	sieve (x:xs) = x:sieve [ y | y <- xs, mod y x /= 0]
+	
+2:sieve [ y | y <- xs, mod y x /= 0]   {- 3,5,7,9,11,13,15,17...-}
+2:3:sieve  [y | y <- xs, mod y x /= 0 ] {-5,7,11,13,17,19...-}
+2:3:5:sieve ..
+
+	
+Trace the fibs , powsOf2 and primes functions for the first 3 elements.
