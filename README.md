@@ -1,2 +1,2 @@
 # functional-programming-21-22
-FP Labs exercises and problems
+FP Labs exercises and problems. Files written by me follow the following naming convention: L01, L02 .....
