@@ -54,8 +54,8 @@ upper = satisfies (\c -> elem c ['A' .. 'Z']) "uppercase character"
 char :: Char -> Parser Char
 char c = satisfies (== c) ("character " ++ show c)
 
-digit :: Parser Char
-digit = satisfies (`elem` ['0' .. '9']) "digit"
+-- digit :: Parser Char
+-- digit = satisfies (`elem` ['0' .. '9']) "digit"
 
 letter :: Parser Char
 letter = lower `orElse` upper `expecting` "letter"
@@ -65,8 +65,8 @@ succeed :: a -> Parser a
 succeed a = parser $ \input -> Success (a, input)
 
 -- | Parser that always fails with a given message.
-fail :: String -> Parser a
-fail err = parser $ \input -> Error (Other err)
+failP :: String -> Parser a
+failP err = parser $ \input -> Error (Other err)
 
 -- Combinators ---------------------------------------------------------
 
@@ -201,13 +201,3 @@ ws = many ((char ' ') `orElse` (char '\n'))
 
 -- Exercises -----------------------------------------------------------------------------------------------------------
 
--- | Parse a number
---
--- >>> runParser number "123"
--- Success (123, "")
-number :: Parser Int
-number = undefined
-
--- | Parse a string. Uses only combinators defined so far.
-string' :: String -> Parser String
-string' _ = undefined

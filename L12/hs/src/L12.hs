@@ -3,6 +3,38 @@ module L12 where
 import Parser
 import Result
 
+
+{-
+    E 12.1.1 Create a new parser using satisfies , char :: Char -> Parser Char that generates a
+    parser that parses a given character (received as first argument).
+-}
+
+charS :: Char -> Parser Char
+charS c = satisfies (\x -> x == c) "Unexpected Character"
+
+{-
+    E 12.1.2 Create a new parser using digit :: Parser Char that parses a digit.
+-}
+
+digit :: Parser Char
+digit = satisfies (\c -> elem c ['0' .. '9']) "digit parser"
+
+{-
+    E 12.2.1 Create a new parser for strings, string’ , that only uses the combinators defined so far
+    ( andThen , orElse and pMap ), without using inner functions.
+-}
+
+string' :: String -> Parser String
+string' "" = succeed []
+string' (subc:subs) = (\(x, xs) -> x:xs) `pMap` (char subc `andThen` string' subs)
+
+{-
+    E 12.2.2 Create a new parser number :: Parser Int that parses a number.
+-}
+
+number :: Parser Int
+number =  (\x -> read x :: Int) `pMap` (some digit)
+
 {-
     E 12.3.1 Create a new combinator pThen :: Parser a -> Parser b -> Parser b . First, it runs the
     first parser, pa . If pa succeeds, it discards the result and runs pb on the remaining
